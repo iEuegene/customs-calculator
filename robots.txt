@@ -1,1 +1,4 @@
-user-agent: *
+User-agent: *
+Allow: /
+
+Sitemap: https://rozmytnennya.com.ua/sitemap.xml
