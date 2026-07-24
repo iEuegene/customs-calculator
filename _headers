@@ -1,0 +1,10 @@
+# Для маніфесту та іконок — коротке кешування або перевірка оновлень
+/manifest.json
+  Cache-Control: public, max-age=0, must-revalidate
+
+/*.png
+  Cache-Control: public, max-age=3600
+
+# Для API-ендпоінтів — взагалі забороняємо кешувати
+/api/*
+  Cache-Control: no-store, no-cache, must-revalidate
