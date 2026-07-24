@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rozmytnennya-v1';
+const CACHE_NAME = 'rozmytnennya-v2';
 const APP_SHELL = [
   '/',
   '/favicon.svg',
@@ -44,11 +44,16 @@ self.addEventListener('fetch', function (event) {
     return;
   }
 
-  // Everything else (the app shell itself): cache-first, so the calculator
-  // opens instantly and works offline once it's been visited at least once.
+  // Everything else (the app shell itself): network-first, so a normal reload
+  // always shows the latest deployed version. Cache is only used as a fallback
+  // when the network is unavailable (offline), not as the default source.
   event.respondWith(
-    caches.match(event.request).then(function (cached) {
-      return cached || fetch(event.request);
-    })
+    fetch(event.request)
+      .then(function (res) {
+        const copy = res.clone();
+        caches.open(CACHE_NAME).then(function (cache) { cache.put(event.request, copy); });
+        return res;
+      })
+      .catch(function () { return caches.match(event.request); })
   );
 });
