@@ -68,11 +68,11 @@ async function updatePrices(env) {
   const networks = rows
     .map(cells => ({
       name: (cells[0] || '').trim(),
-      a96: num(cells[2]),
-      a95: num(cells[3]),
-      a92: num(cells[4]),
-      dt: num(cells[5]),
-      lpg: num(cells[6])
+      a96: num(cells[1]),
+      a95: num(cells[2]),
+      a92: num(cells[3]),
+      dt: num(cells[4]),
+      lpg: num(cells[5])
     }))
     .filter(r => r.name);
 
