@@ -1,6 +1,6 @@
 export async function onRequestGet() {
   try {
-    const res = await fetch('https://bank.gov.ua/NBU_Exchange/exchange?json');
+    const res = await fetch('https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json');
     if (!res.ok) {
       return new Response(JSON.stringify({ error: 'nbu_unavailable' }), {
         status: 502,
