@@ -30,7 +30,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.44.0/dist/tabler-icons.min.css">
 <style>
   :root{
     --ink:#16202A;
@@ -49,6 +48,7 @@
     --font-mono:'JetBrains Mono',monospace;
   }
   *{box-sizing:border-box;}
+  .icon{width:1em; height:1em; stroke:currentColor; fill:none; vertical-align:-0.15em; flex-shrink:0;}
   html,body{margin:0;padding:0;}
   body{
     background:var(--paper);
@@ -75,7 +75,7 @@
     align-items:center;
     gap:8px;
   }
-  header .brand i{color:var(--amber); font-size:20px;}
+  header .brand svg.icon{color:var(--amber); font-size:20px;}
   header button{
     background:transparent;
     border:1px solid rgba(255,255,255,0.25);
@@ -132,13 +132,13 @@
     gap:7px;
     font-family:var(--font-body);
   }
-  .seg button i{font-size:18px;}
+  .seg button svg.icon{font-size:18px;}
   .seg button.active{
     border-color:var(--ink);
     background:var(--ink);
     color:var(--paper);
   }
-  .seg button.active i{color:var(--amber);}
+  .seg button.active svg.icon{color:var(--amber);}
   .row{display:flex; gap:10px;}
   .row > div{flex:1;}
   .row .grow2{flex:2;}
@@ -191,7 +191,7 @@
     padding-top:16px;
     margin-top:8px;
   }
-  .disclaimer i{color:var(--stamp);}
+  .disclaimer svg.icon{color:var(--stamp);}
 
   .faq{max-width:480px; margin:0 auto; padding:8px 16px 8px;}
   .faq h2{font-family:var(--font-display); font-size:18px; font-weight:600; margin:22px 0 14px;}
@@ -253,7 +253,7 @@
     gap:6px;
     font-family:var(--font-body);
   }
-  .actions button i{font-size:16px;}
+  .actions button svg.icon{font-size:16px;}
   .actions button.primary{
     background:var(--amber);
     color:var(--ink);
@@ -276,8 +276,8 @@
 <body>
 
 <header>
-  <div class="brand"><i class="ti ti-stamp" aria-hidden="true"></i>Розмитнення.calc</div>
-  <button type="button" aria-label="Про калькулятор" onclick="alert('Орієнтовний розрахунок за формулою ст. 215.3.5-1 Податкового кодексу України. Митниця може застосувати власну оцінку вартості авто.')"><i class="ti ti-info-circle" aria-hidden="true"></i></button>
+  <div class="brand"><svg class="icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 17.85h-18c0 -4.05 1.421 -4.05 3.79 -4.05c5.21 0 1.21 -4.59 1.21 -6.8a4 4 0 1 1 8 0c0 2.21 -4 6.8 1.21 6.8c2.369 0 3.79 0 3.79 4.05" /><path d="M5 21h14" /></svg>Розмитнення.calc</div>
+  <button type="button" aria-label="Про калькулятор" onclick="alert('Орієнтовний розрахунок за формулою ст. 215.3.5-1 Податкового кодексу України. Митниця може застосувати власну оцінку вартості авто.')"><svg class="icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 9h.01" /><path d="M11 12h1v4h1" /></svg></button>
 </header>
 
 <main>
@@ -286,10 +286,10 @@
   <div class="field">
     <label>Тип двигуна</label>
     <div class="seg" id="fuel-group">
-      <button type="button" data-fuel="petrol"><i class="ti ti-gas-station"></i>Бензин</button>
-      <button type="button" data-fuel="diesel"><i class="ti ti-droplet"></i>Дизель</button>
-      <button type="button" data-fuel="electro"><i class="ti ti-bolt"></i>Електро</button>
-      <button type="button" data-fuel="hybrid"><i class="ti ti-leaf"></i>Гібрид</button>
+      <button type="button" data-fuel="petrol"><svg class="icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 11h1a2 2 0 0 1 2 2v3a1.5 1.5 0 0 0 3 0v-7l-3 -3" /><path d="M4 20v-14a2 2 0 0 1 2 -2h6a2 2 0 0 1 2 2v14" /><path d="M3 20l12 0" /><path d="M18 7v1a1 1 0 0 0 1 1h1" /><path d="M4 11l10 0" /></svg>Бензин</button>
+      <button type="button" data-fuel="diesel"><svg class="icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.502 19.423c2.602 2.105 6.395 2.105 8.996 0c2.602 -2.105 3.262 -5.708 1.566 -8.546l-4.89 -7.26c-.42 -.625 -1.287 -.803 -1.936 -.397a1.376 1.376 0 0 0 -.41 .397l-4.893 7.26c-1.695 2.838 -1.035 6.441 1.567 8.546" /></svg>Дизель</button>
+      <button type="button" data-fuel="electro"><svg class="icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3l0 7l6 0l-8 11l0 -7l-6 0l8 -11" /></svg>Електро</button>
+      <button type="button" data-fuel="hybrid"><svg class="icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21c.5 -4.5 2.5 -8 7 -10" /><path d="M9 18c6.218 0 10.5 -3.288 11 -12v-2h-4.014c-9 0 -11.986 4 -12 9c0 1 0 3 2 5h3l.014 0" /></svg>Гібрид</button>
     </div>
   </div>
 
@@ -332,7 +332,7 @@
     <div class="row" style="align-items:stretch;">
       <div class="grow2"><input id="rate" type="number" inputmode="decimal" value="51.06" step="0.01"></div>
       <div style="flex:0 0 50px;">
-        <button type="button" id="btn-refresh-rate" aria-label="Оновити курс НБУ" style="width:50px; height:50px; border-radius:var(--radius); border:1.5px solid var(--line); background:var(--surface); display:flex; align-items:center; justify-content:center;"><i class="ti ti-refresh" aria-hidden="true"></i></button>
+        <button type="button" id="btn-refresh-rate" aria-label="Оновити курс НБУ" style="width:50px; height:50px; border-radius:var(--radius); border:1.5px solid var(--line); background:var(--surface); display:flex; align-items:center; justify-content:center;"><svg class="icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" /><path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" /></svg></button>
       </div>
     </div>
   </div>
@@ -355,7 +355,7 @@
     <div class="card"><div class="label">Пенсійний збір</div><div class="value" id="out-pension">0 ₴</div></div>
   </div>
 
-  <p class="disclaimer"><i class="ti ti-alert-triangle" aria-hidden="true"></i> Стан (нове/вживане) визначається автоматично за роком випуску. Орієнтовний розрахунок за ст. 215.3.5-1 ПКУ — митниця може застосувати власну оцінку вартості замість заявленої.</p>
+  <p class="disclaimer"><svg class="icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 9v4" /><path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0" /><path d="M12 16h.01" /></svg> Стан (нове/вживане) визначається автоматично за роком випуску. Орієнтовний розрахунок за ст. 215.3.5-1 ПКУ — митниця може застосувати власну оцінку вартості замість заявленої.</p>
 </main>
 
 <section class="faq" aria-labelledby="faq-heading">
@@ -462,10 +462,10 @@
     </div>
     <div class="lcd" id="total" style="margin-bottom:12px;">0 ₴</div>
     <div class="actions">
-      <button type="button" class="primary" id="btn-pdf"><i class="ti ti-file-download"></i>PDF</button>
-      <button type="button" id="btn-wa"><i class="ti ti-brand-whatsapp"></i>WhatsApp</button>
-      <button type="button" id="btn-tg"><i class="ti ti-brand-telegram"></i>Telegram</button>
-      <button type="button" id="btn-viber"><i class="ti ti-share-2"></i>Viber</button>
+      <button type="button" class="primary" id="btn-pdf"><svg class="icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2" /><path d="M12 17v-6" /><path d="M9.5 14.5l2.5 2.5l2.5 -2.5" /></svg>PDF</button>
+      <button type="button" id="btn-wa"><svg class="icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21l1.65 -3.8a9 9 0 1 1 3.4 2.9l-5.05 .9" /><path d="M9 10a.5 .5 0 0 0 1 0v-1a.5 .5 0 0 0 -1 0v1a5 5 0 0 0 5 5h1a.5 .5 0 0 0 0 -1h-1a.5 .5 0 0 0 0 1" /></svg>WhatsApp</button>
+      <button type="button" id="btn-tg"><svg class="icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 10l-4 4l6 6l4 -16l-18 7l4 2l2 6l3 -4" /></svg>Telegram</button>
+      <button type="button" id="btn-viber"><svg class="icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 9h-1a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-8a2 2 0 0 0 -2 -2h-1" /><path d="M12 14v-11" /><path d="M9 6l3 -3l3 3" /></svg>Viber</button>
     </div>
   </div>
 </div>
@@ -582,13 +582,13 @@
     if (dutyUAH === 0) {
       var b = document.createElement('span');
       b.className = 'stamp';
-      b.innerHTML = '<i class="ti ti-stamp" aria-hidden="true"></i>0% мито';
+      b.innerHTML = '<svg class="icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 17.85h-18c0 -4.05 1.421 -4.05 3.79 -4.05c5.21 0 1.21 -4.59 1.21 -6.8a4 4 0 1 1 8 0c0 2.21 -4 6.8 1.21 6.8c2.369 0 3.79 0 3.79 4.05" /><path d="M5 21h14" /></svg>0% мито';
       badges.appendChild(b);
     }
     if (fuel === 'electro') {
       var b2 = document.createElement('span');
       b2.className = 'stamp';
-      b2.innerHTML = '<i class="ti ti-stamp" aria-hidden="true"></i>Без пенсійного збору';
+      b2.innerHTML = '<svg class="icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 17.85h-18c0 -4.05 1.421 -4.05 3.79 -4.05c5.21 0 1.21 -4.59 1.21 -6.8a4 4 0 1 1 8 0c0 2.21 -4 6.8 1.21 6.8c2.369 0 3.79 0 3.79 4.05" /><path d="M5 21h14" /></svg>Без пенсійного збору';
       badges.appendChild(b2);
     }
 
