@@ -27,45 +27,52 @@ async function updatePrices(env) {
     return { ok: false, error: 'fetch_failed', status: res.status };
   }
 
-  const cells = [];
-  let updatedDate = null;
+  const html = await res.text();
 
-  const rewriter = new HTMLRewriter()
-    .on('caption', {
-      text(t) {
-        const m = t.text.match(/(\d{2}\.\d{2}\.\d{4})/);
-        if (m) updatedDate = m[1];
-      }
-    })
-    .on('table.zebra tbody tr td', {
-      element() {
-        cells.push('');
-      },
-      text(t) {
-        if (cells.length) cells[cells.length - 1] += t.text;
-      }
-    });
+  // Date lives inside <caption>...дд.мм.рррр...</caption> — scope the search to
+  // the caption text only, so we never accidentally grab an unrelated date on the page.
+  const captionMatch = html.match(/<caption>([\s\S]*?)<\/caption>/);
+  const dateMatch = captionMatch ? captionMatch[1].match(/(\d{2}\.\d{2}\.\d{4})/) : null;
+  const updatedDate = dateMatch ? dateMatch[1] : null;
 
-  await rewriter.transform(res).arrayBuffer();
-
+  function cleanCell(raw) {
+    return raw.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
+  }
   function num(s) {
-    s = (s || '').replace(/\u00a0/g, '').trim();
+    s = (s || '').trim();
     if (!s) return null;
     const v = parseFloat(s.replace(',', '.'));
     return isNaN(v) ? null : v;
   }
 
+  // Match only <tr> rows made of exactly 7 <td> cells — the header row uses <th>,
+  // so it never matches this pattern and is skipped automatically.
+  const rowRegex = /<tr>((?:<td[^>]*>[\s\S]*?<\/td>){7})<\/tr>/g;
+  const tdRegex = /<td[^>]*>([\s\S]*?)<\/td>/g;
+
   const networks = [];
-  for (let i = 0; i + 7 <= cells.length; i += 7) {
-    const name = (cells[i] || '').trim();
+  let rowMatch;
+  while ((rowMatch = rowRegex.exec(html)) !== null) {
+    const rowHtml = rowMatch[1];
+    const cells = [];
+    tdRegex.lastIndex = 0;
+    let tdMatch;
+    while ((tdMatch = tdRegex.exec(rowHtml)) !== null) {
+      cells.push(cleanCell(tdMatch[1]));
+    }
+    if (cells.length !== 7) continue;
+
+    const name = cells[0];
     if (!name) continue;
+
+    // cells: [0]=name  [1]=icon(blank)  [2]=A95+  [3]=A95  [4]=A92  [5]=ДП  [6]=Газ
     networks.push({
       name,
-      a96: num(cells[i + 2]),
-      a95: num(cells[i + 3]),
-      a92: num(cells[i + 4]),
-      dt: num(cells[i + 5]),
-      lpg: num(cells[i + 6])
+      a96: num(cells[2]),
+      a95: num(cells[3]),
+      a92: num(cells[4]),
+      dt: num(cells[5]),
+      lpg: num(cells[6])
     });
   }
 
@@ -83,5 +90,5 @@ async function updatePrices(env) {
 
   await env.FUEL_KV.put('fuel-prices', JSON.stringify(payload));
 
-  return { ok: true, count: networks.length, updated: payload.updated };
+  return { ok: true, count: networks.length, updated: payload.updated, sample: networks[0] };
 }
