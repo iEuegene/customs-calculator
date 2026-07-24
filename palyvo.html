@@ -179,18 +179,7 @@
 
 <script>
 (function(){
-  var data = [
-    {name:'OKKO', a96:81.90, a95:78.90, a92:null, dt:87.90, lpg:46.90},
-    {name:'WOG', a96:81.90, a95:78.90, a92:null, dt:87.90, lpg:46.90},
-    {name:'SOCAR', a96:80.76, a95:77.90, a92:null, dt:86.76, lpg:46.61},
-    {name:'УКРНАФТА', a96:77.90, a95:74.90, a92:69.90, dt:84.90, lpg:44.90},
-    {name:'UPG', a96:76.90, a95:74.90, a92:null, dt:82.90, lpg:44.90},
-    {name:'KLO', a96:80.70, a95:72.90, a92:69.90, dt:84.90, lpg:45.40},
-    {name:'AMIC', a96:77.78, a95:74.54, a92:null, dt:83.57, lpg:45.35},
-    {name:'БРСМ-Нафта', a96:null, a95:73.17, a92:null, dt:79.72, lpg:43.72},
-    {name:'Маркет', a96:null, a95:74.90, a92:null, dt:82.90, lpg:44.90},
-    {name:'Motto', a96:null, a95:74.88, a92:null, dt:91.48, lpg:52.98}
-  ];
+  var data = [];
 
   function fmt(v){ return v == null ? '—' : v.toFixed(2); }
 
@@ -221,8 +210,22 @@
 
   document.getElementById('search').addEventListener('input', render);
   document.getElementById('sortby').addEventListener('change', render);
-  document.getElementById('updated').textContent = 'Дані станом на ' + new Date().toLocaleDateString('uk-UA') + ' (тестовий знімок, до підключення живих даних)';
-  render();
+
+  var updatedEl = document.getElementById('updated');
+  fetch('/api/fuel-prices')
+    .then(function(res){
+      if (!res.ok) throw new Error('http ' + res.status);
+      return res.json();
+    })
+    .then(function(payload){
+      data = payload.networks || [];
+      updatedEl.textContent = 'Оновлено ' + payload.updated + ' · джерело: Мінфін';
+      render();
+    })
+    .catch(function(){
+      updatedEl.textContent = 'Дані тимчасово недоступні, спробуйте оновити сторінку пізніше.';
+      document.getElementById('rows').innerHTML = '';
+    });
 })();
 </script>
 </body>
