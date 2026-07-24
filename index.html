@@ -6,7 +6,7 @@
 <title>Калькулятор розмитнення авто в Україні — мито, акциз, ПДВ, пенсійний збір</title>
 <meta name="description" content="Порахуйте орієнтовну вартість розмитнення авто в Україні: мито, акциз, ПДВ і пенсійний збір для бензинових, дизельних, гібридних та електромобілів.">
 <link rel="canonical" href="https://rozmytnennya.com.ua/">
-<meta name="robots" content="noindex, follow">
+<meta name="robots" content="index, follow">
 <meta property="og:title" content="Калькулятор розмитнення авто в Україні — мито, акциз, ПДВ">
 <meta property="og:description" content="Порахуйте орієнтовну вартість розмитнення авто в Україні: мито, акциз, ПДВ і пенсійний збір для бензинових, дизельних, гібридних та електромобілів.">
 <meta property="og:type" content="website">
@@ -701,7 +701,7 @@
 
   document.getElementById('btn-pdf').addEventListener('click', function(){ renderReceipt(last); window.print(); });
   document.getElementById('btn-wa').addEventListener('click', function(){ openLinkSafe('https://wa.me/?text='+encodeURIComponent(buildShareText(last))); });
-  document.getElementById('btn-tg').addEventListener('click', function(){ openLinkSafe('https://t.me/share/url?url=&text='+encodeURIComponent(buildShareText(last))); });
+  document.getElementById('btn-tg').addEventListener('click', function(){ openLinkSafe('https://t.me/share/url?url=' + encodeURIComponent(location.origin + '/') + '&text=' + encodeURIComponent(buildShareText(last))); });
   document.getElementById('btn-viber').addEventListener('click', function(){ openLinkSafe('viber://forward?text='+encodeURIComponent(buildShareText(last))); });
 
   setFuel('petrol');
