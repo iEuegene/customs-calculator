@@ -27,8 +27,7 @@ async function updatePrices(env) {
     return { ok: false, error: 'fetch_failed', status: res.status };
   }
 
-  const rows = [];
-  let current = null;
+  const cells = [];
   let updatedDate = null;
 
   const rewriter = new HTMLRewriter()
@@ -38,21 +37,12 @@ async function updatePrices(env) {
         if (m) updatedDate = m[1];
       }
     })
-    .on('table.zebra tbody tr', {
-      element(el) {
-        current = [];
-        const rowRef = current;
-        el.onEndTag(() => {
-          if (rowRef.length >= 7) rows.push(rowRef.slice());
-        });
-      }
-    })
     .on('table.zebra tbody tr td', {
       element() {
-        if (current) current.push('');
+        cells.push('');
       },
       text(t) {
-        if (current && current.length) current[current.length - 1] += t.text;
+        if (cells.length) cells[cells.length - 1] += t.text;
       }
     });
 
@@ -65,16 +55,19 @@ async function updatePrices(env) {
     return isNaN(v) ? null : v;
   }
 
-  const networks = rows
-    .map(cells => ({
-      name: (cells[0] || '').trim(),
-      a96: num(cells[1]),
-      a95: num(cells[2]),
-      a92: num(cells[3]),
-      dt: num(cells[4]),
-      lpg: num(cells[5])
-    }))
-    .filter(r => r.name);
+  const networks = [];
+  for (let i = 0; i + 7 <= cells.length; i += 7) {
+    const name = (cells[i] || '').trim();
+    if (!name) continue;
+    networks.push({
+      name,
+      a96: num(cells[i + 2]),
+      a95: num(cells[i + 3]),
+      a92: num(cells[i + 4]),
+      dt: num(cells[i + 5]),
+      lpg: num(cells[i + 6])
+    });
+  }
 
   if (networks.length === 0) {
     // Parsing failed (site structure likely changed) — don't overwrite good cached data with empty results.
