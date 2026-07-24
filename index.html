@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Калькулятор розмитнення авто в Україні — мито, акциз, ПДВ, пенсійний збір</title>
+<meta name="description" content="Порахуйте орієнтовну вартість розмитнення авто в Україні: мито, акциз, ПДВ і пенсійний збір для бензинових, дизельних, гібридних та електромобілів.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
+<style>
+  :root{
+    --ink:#16202A;
+    --paper:#ECEEEF;
+    --surface:#FFFFFF;
+    --line:#D6D9DA;
+    --muted:#5B6670;
+    --amber:#C98A2C;
+    --amber-ink:#7A5218;
+    --teal:#1F6F5C;
+    --teal-bg:#E1EFEA;
+    --stamp:#A6402E;
+    --radius:14px;
+    --font-display:'Oswald',sans-serif;
+    --font-body:'Inter',sans-serif;
+    --font-mono:'JetBrains Mono',monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--font-body);
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:260px; /* fallback; overridden by JS to match real dock height */
+  }
+  a{color:inherit;}
+  header{
+    background:var(--ink);
+    color:var(--paper);
+    padding:18px 20px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  header .brand{
+    font-family:var(--font-display);
+    font-weight:600;
+    letter-spacing:0.03em;
+    font-size:17px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  header .brand i{color:var(--amber); font-size:20px;}
+  header button{
+    background:transparent;
+    border:1px solid rgba(255,255,255,0.25);
+    color:var(--paper);
+    width:34px;height:34px;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:16px;
+  }
+  main{
+    max-width:480px;
+    margin:0 auto;
+    padding:20px 16px 8px;
+  }
+  .field{margin-bottom:16px;}
+  .field label{
+    display:block;
+    font-size:13px;
+    color:var(--muted);
+    margin-bottom:7px;
+    font-weight:500;
+  }
+  input,select{
+    width:100%;
+    height:50px;
+    border:1.5px solid var(--line);
+    border-radius:var(--radius);
+    background:var(--surface);
+    font-size:16px;
+    font-family:var(--font-body);
+    color:var(--ink);
+    padding:0 14px;
+  }
+  input:focus,select:focus,button:focus-visible{
+    outline:2px solid var(--amber);
+    outline-offset:1px;
+  }
+  .seg{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+  }
+  .seg button{
+    min-height:52px;
+    border-radius:var(--radius);
+    border:1.5px solid var(--line);
+    background:var(--surface);
+    color:var(--ink);
+    font-size:14px;
+    font-weight:500;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    font-family:var(--font-body);
+  }
+  .seg button i{font-size:18px;}
+  .seg button.active{
+    border-color:var(--ink);
+    background:var(--ink);
+    color:var(--paper);
+  }
+  .seg button.active i{color:var(--amber);}
+  .row{display:flex; gap:10px;}
+  .row > div{flex:1;}
+  .row .grow2{flex:2;}
+  .badge-row{display:flex; gap:8px; flex-wrap:wrap; margin:10px 0 4px;}
+  .stamp{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    border:1.5px dashed var(--teal);
+    color:var(--teal);
+    background:var(--teal-bg);
+    font-family:var(--font-display);
+    font-size:12px;
+    letter-spacing:0.04em;
+    font-weight:600;
+    padding:6px 12px;
+    border-radius:999px;
+    transform:rotate(-10deg);
+  }
+  .age-note{
+    margin-top:8px;
+    display:inline-block;
+    font-size:13px;
+    color:var(--muted);
+    background:var(--surface);
+    border:1px solid var(--line);
+    padding:6px 12px;
+    border-radius:999px;
+  }
+  .hint{font-size:12px; color:var(--muted); margin-top:6px; line-height:1.5;}
+  .breakdown{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin:18px 0;
+  }
+  .card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:14px;
+  }
+  .card .label{font-size:12px; color:var(--muted); margin-bottom:4px;}
+  .card .value{font-family:var(--font-mono); font-size:17px; font-weight:700;}
+  .disclaimer{
+    font-size:12.5px;
+    color:var(--muted);
+    line-height:1.6;
+    border-top:1px solid var(--line);
+    padding-top:16px;
+    margin-top:8px;
+  }
+  .disclaimer i{color:var(--stamp);}
+
+  /* Sticky bottom result bar — one-handed thumb zone */
+  .dock{
+    position:fixed;
+    left:0; right:0; bottom:0;
+    background:var(--ink);
+    color:var(--paper);
+    padding:14px 16px calc(14px + env(safe-area-inset-bottom));
+    box-shadow:0 -8px 24px rgba(0,0,0,0.18);
+  }
+  .dock-inner{max-width:480px; margin:0 auto;}
+  .dock-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom:10px;
+  }
+  .dock-top .lcd-label{font-size:12px; color:#98A2AC; text-transform:uppercase; letter-spacing:0.06em;}
+  .lcd{
+    background:#0C1319;
+    border-radius:10px;
+    padding:8px 14px;
+    font-family:var(--font-mono);
+    font-size:26px;
+    font-weight:700;
+    color:var(--amber);
+    letter-spacing:0.02em;
+    text-align:right;
+    border:1px solid #26333F;
+  }
+  .actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+  }
+  .actions button{
+    min-height:46px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.18);
+    background:rgba(255,255,255,0.06);
+    color:var(--paper);
+    font-size:13px;
+    font-weight:500;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    font-family:var(--font-body);
+  }
+  .actions button i{font-size:16px;}
+  .actions button.primary{
+    background:var(--amber);
+    color:var(--ink);
+    border-color:var(--amber);
+    font-weight:600;
+  }
+
+  #receipt{display:none;}
+  @media print{
+    header,.dock,main{display:none !important;}
+    #receipt{display:block !important;}
+  }
+
+  @media (prefers-reduced-motion:no-preference){
+    .lcd{transition:transform 0.15s ease;}
+    .lcd.pulse{transform:scale(1.03);}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand"><i class="ti ti-stamp" aria-hidden="true"></i>Розмитнення.calc</div>
+  <button type="button" aria-label="Про калькулятор" onclick="alert('Орієнтовний розрахунок за формулою ст. 215.3.5-1 Податкового кодексу України. Митниця може застосувати власну оцінку вартості авто.')"><i class="ti ti-info-circle" aria-hidden="true"></i></button>
+</header>
+
+<main>
+  <h1 style="font-family:var(--font-display); font-size:20px; font-weight:600; margin:4px 0 18px;">Скільки коштує розмитнити авто</h1>
+
+  <div class="field">
+    <label>Тип двигуна</label>
+    <div class="seg" id="fuel-group">
+      <button type="button" data-fuel="petrol"><i class="ti ti-gas-station"></i>Бензин</button>
+      <button type="button" data-fuel="diesel"><i class="ti ti-droplet"></i>Дизель</button>
+      <button type="button" data-fuel="electro"><i class="ti ti-bolt"></i>Електро</button>
+      <button type="button" data-fuel="hybrid"><i class="ti ti-leaf"></i>Гібрид</button>
+    </div>
+  </div>
+
+  <div class="field" id="hybrid-sub-field" style="display:none;">
+    <label>Двигун гібрида</label>
+    <div class="seg" id="hsub-group">
+      <button type="button" data-hsub="petrol">Бензин</button>
+      <button type="button" data-hsub="diesel">Дизель</button>
+    </div>
+  </div>
+
+  <div class="field">
+    <label id="volume-label">Об'єм двигуна, см³</label>
+    <input id="volume" type="number" inputmode="numeric" value="1600">
+  </div>
+
+  <div class="field" id="year-field">
+    <label>Рік випуску</label>
+    <input id="year" type="number" inputmode="numeric" value="2019">
+    <span class="age-note" id="age-note">Нове (К_вік = 1)</span>
+  </div>
+
+  <div class="field row">
+    <div class="grow2">
+      <label>Вартість</label>
+      <input id="cost" type="number" inputmode="numeric" value="10000">
+    </div>
+    <div>
+      <label>Валюта</label>
+      <select id="currency">
+        <option value="51.06">EUR</option>
+        <option value="44.81">USD</option>
+        <option value="12.2">PLN</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Курс НБУ, грн за од. <span id="rate-status" style="font-weight:400; color:var(--muted);"></span></label>
+    <div class="row" style="align-items:stretch;">
+      <div class="grow2"><input id="rate" type="number" inputmode="decimal" value="51.06" step="0.01"></div>
+      <div style="flex:0 0 50px;">
+        <button type="button" id="btn-refresh-rate" aria-label="Оновити курс НБУ" style="width:50px; height:50px; border-radius:var(--radius); border:1.5px solid var(--line); background:var(--surface); display:flex; align-items:center; justify-content:center;"><i class="ti ti-refresh" aria-hidden="true"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Походження</label>
+    <div class="seg" id="origin-group">
+      <button type="button" data-origin="eu">ЄС</button>
+      <button type="button" data-origin="other">Не ЄС</button>
+    </div>
+    <div class="hint">США, Японія, Китай тощо — мито 10%, крім електро</div>
+  </div>
+
+  <div class="badge-row" id="badges"></div>
+
+  <div class="breakdown">
+    <div class="card"><div class="label">Мито</div><div class="value" id="out-duty">0 ₴</div></div>
+    <div class="card"><div class="label">Акциз</div><div class="value" id="out-excise">0 ₴</div></div>
+    <div class="card"><div class="label">ПДВ</div><div class="value" id="out-vat">0 ₴</div></div>
+    <div class="card"><div class="label">Пенсійний збір</div><div class="value" id="out-pension">0 ₴</div></div>
+  </div>
+
+  <p class="disclaimer"><i class="ti ti-alert-triangle" aria-hidden="true"></i> Стан (нове/вживане) визначається автоматично за роком випуску. Орієнтовний розрахунок за ст. 215.3.5-1 ПКУ — митниця може застосувати власну оцінку вартості замість заявленої.</p>
+</main>
+
+<div class="dock">
+  <div class="dock-inner">
+    <div class="dock-top">
+      <span class="lcd-label">Разом до сплати</span>
+    </div>
+    <div class="lcd" id="total" style="margin-bottom:12px;">0 ₴</div>
+    <div class="actions">
+      <button type="button" class="primary" id="btn-pdf"><i class="ti ti-file-download"></i>PDF</button>
+      <button type="button" id="btn-wa"><i class="ti ti-brand-whatsapp"></i>WhatsApp</button>
+      <button type="button" id="btn-tg"><i class="ti ti-brand-telegram"></i>Telegram</button>
+      <button type="button" id="btn-viber"><i class="ti ti-share-2"></i>Viber</button>
+    </div>
+  </div>
+</div>
+
+<div id="receipt"></div>
+
+<script>
+(function(){
+  var fuel='petrol', hsub='petrol', origin='eu';
+  var last = {};
+
+  function styleGroup(groupId, activeVal, dataAttr){
+    document.querySelectorAll('#'+groupId+' button').forEach(function(btn){
+      btn.classList.toggle('active', btn.getAttribute(dataAttr) === activeVal);
+    });
+  }
+
+  function fmt(n){ return Math.round(n).toLocaleString('uk-UA') + ' \u20b4'; }
+
+  function row(label, value){
+    return '<tr><td style="padding:7px 0; color:#555; font-size:14px;">'+label+'</td><td style="padding:7px 0; text-align:right; font-weight:600; font-size:14px;">'+value+'</td></tr>';
+  }
+
+  function renderReceipt(d){
+    document.getElementById('receipt').innerHTML =
+      '<div style="font-family:sans-serif; padding:28px; max-width:520px; color:#111;">'
+      + '<h2 style="font-size:19px; margin:0 0 4px;">Розрахунок розмитнення авто</h2>'
+      + '<p style="font-size:12px; color:#666; margin:0 0 18px;">'+d.date+'</p>'
+      + '<table style="width:100%; border-collapse:collapse;">'
+      + row('Тип двигуна', d.fuelLabel)
+      + row(d.volumeLabel, d.volumeValue)
+      + (d.ageLabel ? row('Стан', d.ageLabel) : '')
+      + row('Вартість', d.costLabel)
+      + row('Курс НБУ', d.rateLabel)
+      + row('Походження', d.originLabel)
+      + '</table>'
+      + '<table style="width:100%; border-collapse:collapse; margin-top:16px; border-top:1px solid #ccc; padding-top:8px;">'
+      + row('Мито', fmt(d.duty)) + row('Акциз', fmt(d.excise)) + row('ПДВ', fmt(d.vat)) + row('Пенсійний збір', fmt(d.pension))
+      + '</table>'
+      + '<div style="display:flex; justify-content:space-between; margin-top:18px; padding-top:14px; border-top:2px solid #000; font-size:19px; font-weight:700;">'
+      + '<span>Разом до сплати</span><span>'+fmt(d.total)+'</span></div>'
+      + '<p style="font-size:11px; color:#666; margin-top:22px;">Орієнтовний розрахунок за ст. 215.3.5-1 ПКУ. Митниця може застосувати власну оцінку вартості замість заявленої.</p>'
+      + '</div>';
+  }
+
+  function buildShareText(d){
+    var lines = ['Розрахунок розмитнення авто ('+d.date+')', 'Тип двигуна: '+d.fuelLabel, d.volumeLabel+': '+d.volumeValue];
+    if (d.ageLabel) lines.push('Стан: '+d.ageLabel);
+    lines.push('Вартість: '+d.costLabel, 'Походження: '+d.originLabel, '',
+      'Мито: '+fmt(d.duty), 'Акциз: '+fmt(d.excise), 'ПДВ: '+fmt(d.vat), 'Пенсійний збір: '+fmt(d.pension),
+      'Разом до сплати: '+fmt(d.total));
+    return lines.join('\n');
+  }
+
+  function calc(){
+    var volume = parseFloat(document.getElementById('volume').value) || 0;
+    var year = parseInt(document.getElementById('year').value) || new Date().getFullYear();
+    var cost = parseFloat(document.getElementById('cost').value) || 0;
+    var rate = parseFloat(document.getElementById('rate').value) || 0;
+    var currencySel = document.getElementById('currency');
+    var currencyCode = currencySel.options[currencySel.selectedIndex].text;
+    var costUAH = cost * rate;
+
+    var currentYear = new Date().getFullYear();
+    var rawAge = currentYear - year;
+    var ageYears = Math.max(1, Math.min(15, rawAge));
+
+    var yearField = document.getElementById('year-field');
+    var ageNote = document.getElementById('age-note');
+    var ageLabelText = '';
+    if (fuel === 'electro') {
+      yearField.style.display = 'none';
+    } else {
+      yearField.style.display = 'block';
+      ageLabelText = rawAge <= 1 ? 'Нове' : ('Вживане, '+ageYears+' р.');
+      ageNote.textContent = ageLabelText;
+    }
+
+    var effectiveFuel = fuel === 'hybrid' ? hsub : fuel;
+
+    var dutyUAH = (fuel === 'electro' || origin === 'eu') ? 0 : costUAH * 0.10;
+
+    var exciseEUR;
+    if (fuel === 'electro') {
+      exciseEUR = volume;
+    } else {
+      var base = effectiveFuel === 'diesel' ? (volume <= 3500 ? 75 : 150) : (volume <= 3000 ? 50 : 100);
+      exciseEUR = base * (volume/1000) * ageYears;
+    }
+    var exciseUAH = exciseEUR * rate;
+
+    var vat = (costUAH + dutyUAH + exciseUAH) * 0.20;
+
+    var pension = 0;
+    if (fuel !== 'electro') {
+      var pm = 3328;
+      pension = costUAH <= 165*pm ? costUAH*0.03 : (costUAH <= 290*pm ? costUAH*0.04 : costUAH*0.05);
+    }
+
+    var total = dutyUAH + exciseUAH + vat + pension;
+
+    document.getElementById('out-duty').textContent = fmt(dutyUAH);
+    document.getElementById('out-excise').textContent = fmt(exciseUAH);
+    document.getElementById('out-vat').textContent = fmt(vat);
+    document.getElementById('out-pension').textContent = fmt(pension);
+
+    var totalEl = document.getElementById('total');
+    totalEl.textContent = fmt(total);
+    totalEl.classList.add('pulse');
+    setTimeout(function(){ totalEl.classList.remove('pulse'); }, 150);
+
+    var badges = document.getElementById('badges');
+    badges.innerHTML = '';
+    if (dutyUAH === 0) {
+      var b = document.createElement('span');
+      b.className = 'stamp';
+      b.innerHTML = '<i class="ti ti-stamp" aria-hidden="true"></i>0% мито';
+      badges.appendChild(b);
+    }
+    if (fuel === 'electro') {
+      var b2 = document.createElement('span');
+      b2.className = 'stamp';
+      b2.innerHTML = '<i class="ti ti-stamp" aria-hidden="true"></i>Без пенсійного збору';
+      badges.appendChild(b2);
+    }
+
+    var fuelNames = {petrol:'Бензин', diesel:'Дизель', electro:'Електро', hybrid:'Гібрид ('+(hsub==='diesel'?'дизель':'бензин')+')'};
+    last = {
+      date: new Date().toLocaleDateString('uk-UA'),
+      fuelLabel: fuelNames[fuel],
+      volumeLabel: fuel==='electro' ? 'Ємність батареї' : "Об'єм двигуна",
+      volumeValue: volume + (fuel==='electro' ? ' кВт·год' : ' см³'),
+      ageLabel: ageLabelText,
+      costLabel: cost.toLocaleString('uk-UA')+' '+currencyCode,
+      rateLabel: rate.toFixed(2)+' грн/'+currencyCode,
+      originLabel: origin==='eu' ? 'ЄС' : 'Не ЄС',
+      duty: dutyUAH, excise: exciseUAH, vat: vat, pension: pension, total: total
+    };
+    renderReceipt(last);
+  }
+
+  function setFuel(val){
+    fuel = val;
+    styleGroup('fuel-group', fuel, 'data-fuel');
+    document.getElementById('hybrid-sub-field').style.display = fuel==='hybrid' ? 'block' : 'none';
+    var label = document.getElementById('volume-label');
+    var input = document.getElementById('volume');
+    if (fuel === 'electro') {
+      label.textContent = "Ємність батареї, кВт·год";
+      if (input.value == 1600 || !input.value) input.value = 60;
+    } else {
+      label.textContent = "Об'єм двигуна, см³";
+      if (input.value == 60 || !input.value) input.value = 1600;
+    }
+    calc();
+  }
+
+  document.querySelectorAll('#fuel-group button').forEach(function(btn){
+    btn.addEventListener('click', function(){ setFuel(btn.getAttribute('data-fuel')); });
+  });
+  document.querySelectorAll('#hsub-group button').forEach(function(btn){
+    btn.addEventListener('click', function(){ hsub = btn.getAttribute('data-hsub'); styleGroup('hsub-group', hsub, 'data-hsub'); calc(); });
+  });
+  document.querySelectorAll('#origin-group button').forEach(function(btn){
+    btn.addEventListener('click', function(){ origin = btn.getAttribute('data-origin'); styleGroup('origin-group', origin, 'data-origin'); calc(); });
+  });
+  document.getElementById('currency').addEventListener('change', function(){
+    document.getElementById('rate').value = this.value;
+    calc();
+  });
+  ['volume','year','cost','rate'].forEach(function(id){
+    document.getElementById(id).addEventListener('input', calc);
+  });
+
+  function openLinkSafe(url){ window.open(url, '_blank'); }
+
+  // --- Live NBU exchange rate ---
+  var rates = {EUR:51.06, USD:44.81, PLN:12.2}; // fallback only, used if live fetch fails
+  var rateSource = 'fallback';
+  var rateDateText = '';
+
+  function currentCode(){
+    var sel = document.getElementById('currency');
+    return sel.options[sel.selectedIndex].text;
+  }
+
+  function applyRatesToOptions(){
+    document.querySelectorAll('#currency option').forEach(function(opt){
+      if (rates[opt.text] != null) opt.value = rates[opt.text];
+    });
+  }
+
+  function refreshRateField(){
+    var code = currentCode();
+    if (rates[code] != null) document.getElementById('rate').value = rates[code];
+    calc();
+  }
+
+  function updateRateStatus(){
+    var el = document.getElementById('rate-status');
+    if (rateSource === 'live') {
+      el.textContent = '\u00b7 \u0436\u0438\u0432\u0438\u0439 \u043a\u0443\u0440\u0441 \u041d\u0411\u0423, ' + rateDateText;
+      el.style.color = 'var(--teal)';
+    } else {
+      el.textContent = '\u00b7 \u043e\u0444\u043b\u0430\u0439\u043d, \u0437\u0432\u0456\u0440\u0442\u0435 \u0432\u0440\u0443\u0447\u043d\u0443';
+      el.style.color = 'var(--stamp)';
+    }
+  }
+
+  function loadNbuRates(){
+    var el = document.getElementById('rate-status');
+    el.textContent = '\u00b7 \u043e\u043d\u043e\u0432\u043b\u044e\u0454\u043c\u043e...';
+    el.style.color = 'var(--muted)';
+    fetch('https://bank.gov.ua/NBU_Exchange/exchange?json')
+      .then(function(res){ if (!res.ok) throw new Error('http ' + res.status); return res.json(); })
+      .then(function(data){
+        var map = {};
+        data.forEach(function(item){
+          if (item.cc === 'EUR' || item.cc === 'USD' || item.cc === 'PLN') map[item.cc] = item.rate;
+        });
+        if (!map.EUR || !map.USD || !map.PLN) throw new Error('incomplete data');
+        rates = map;
+        rateSource = 'live';
+        rateDateText = (data[0] && data[0].exchangedate) ? data[0].exchangedate : new Date().toLocaleDateString('uk-UA');
+        applyRatesToOptions();
+        refreshRateField();
+      })
+      .catch(function(){
+        rateSource = 'fallback';
+      })
+      .finally(updateRateStatus);
+  }
+
+  document.getElementById('btn-refresh-rate').addEventListener('click', loadNbuRates);
+
+  document.getElementById('btn-pdf').addEventListener('click', function(){ renderReceipt(last); window.print(); });
+  document.getElementById('btn-wa').addEventListener('click', function(){ openLinkSafe('https://wa.me/?text='+encodeURIComponent(buildShareText(last))); });
+  document.getElementById('btn-tg').addEventListener('click', function(){ openLinkSafe('https://t.me/share/url?url=&text='+encodeURIComponent(buildShareText(last))); });
+  document.getElementById('btn-viber').addEventListener('click', function(){ openLinkSafe('viber://forward?text='+encodeURIComponent(buildShareText(last))); });
+
+  setFuel('petrol');
+  styleGroup('origin-group', origin, 'data-origin');
+  calc();
+  loadNbuRates();
+
+  function fitDockPadding(){
+    var dock = document.querySelector('.dock');
+    if (dock) document.body.style.paddingBottom = (dock.offsetHeight + 20) + 'px';
+  }
+  fitDockPadding();
+  window.addEventListener('resize', fitDockPadding);
+  window.addEventListener('load', fitDockPadding);
+  if (window.ResizeObserver) {
+    new ResizeObserver(fitDockPadding).observe(document.querySelector('.dock'));
+  }
+})();
+</script>
+</body>
+</html>
